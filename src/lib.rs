@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(arbitrary_enum_discriminant)]
+#![feature(arbitrary_enum_discriminant, proc_macro_hygiene)]
 #![allow(dead_code)]
 
 #[allow(unused_imports)]
 use crate::prelude::*;
 
 mod prelude;
-mod protocol;
+pub mod protocol;

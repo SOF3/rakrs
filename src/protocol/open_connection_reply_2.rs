@@ -16,7 +16,15 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
+use std::net::SocketAddr;
+
+use super::magic::Magic;
+
 #[derive(Packet)]
-pub struct AdvertiseSystem {
-    pub server_name: String,
+pub struct OpenConnectionReply2 {
+    pub magic: Magic,
+    pub server_id: u64,
+    pub client_address: SocketAddr,
+    pub mtu_size: u16,
+    pub server_security: bool,
 }

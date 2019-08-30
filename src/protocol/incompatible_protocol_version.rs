@@ -16,7 +16,11 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
+use super::magic::Magic;
+
 #[derive(Packet)]
-pub struct AdvertiseSystem {
-    pub server_name: String,
+pub struct IncompatibleProtocolVersion {
+    pub protocol_version: u8,
+    pub magic: Magic,
+    pub server_id: u64,
 }

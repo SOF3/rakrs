@@ -16,7 +16,9 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
+use std::net::SocketAddr;
+
 #[derive(Packet)]
-pub struct AdvertiseSystem {
-    pub server_name: String,
+pub struct ConnectionRequestAccepted {
+    pub address: SocketAddr,
 }

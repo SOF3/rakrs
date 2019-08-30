@@ -16,7 +16,12 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
+use super::magic::Magic;
+
 #[derive(Packet)]
-pub struct AdvertiseSystem {
+pub struct UnconnectedPong {
+    pub send_ping_time: u64,
+    pub server_id: u64,
+    pub magic: Magic,
     pub server_name: String,
 }

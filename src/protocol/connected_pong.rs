@@ -17,6 +17,7 @@
 use crate::prelude::*;
 
 #[derive(Packet)]
-pub struct AdvertiseSystem {
-    pub server_name: String,
+pub struct ConnectedPong {
+    pub send_ping_time: u64,
+    pub send_pong_time: u64,
 }

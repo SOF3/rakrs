@@ -20,9 +20,13 @@ use std::io::{Read, Result, Write};
 
 pub use can_io::{CanIo, Little};
 
+dirmod!();
+
 macro_rules! packets {
     ($($mod:ident $name:ident $id:literal;)*) => {
-        $(pub use $mod::$name;)*
+        pub mod packets {
+            $(pub use super::$mod::$name;)*
+        }
 
         #[repr(u8)]
         pub enum Packet { $($name($mod::$name) = $id),* }
@@ -53,16 +57,26 @@ macro_rules! packets {
     };
 }
 
-mod ack;
-mod advertise_system;
-mod can_io;
+// Required methods on packets:
+// fn read<R: Read>(r: R) -> Result<Self>;
+// fn write<W: Write>(&self, w: W) -> Result<()>;
 
 packets! [
     ack Ack 0xc0;
     ack Nack 0xa0;
     advertise_system AdvertiseSystem 0x1d;
+    connected_ping ConnectedPing 0x00;
+    connected_pong ConnectedPong 0x03;
+    connection_request ConnectionRequest 0x09;
+    connection_request_accepted ConnectionRequestAccepted 0x10;
+    disconnection_notification DisconnectionNotification 0x15;
+    incompatible_protocol_version IncompatibleProtocolVersion 0x19;
+    new_incoming_connection NewIncomingConnection 0x13;
+    open_connection_request_1 OpenConnectionRequest1 0x05;
+    open_connection_reply_1 OpenConnectionReply1 0x06;
+    open_connection_request_2 OpenConnectionRequest2 0x07;
+    open_connection_reply_2 OpenConnectionReply2 0x08;
+    unconnected_ping UnconnectedPing 0x01;
+    unconnected_ping_open_connections UnconnectedPingOpenConnections 0x02;
+    unconnected_pong UnconnectedPong 0x1c;
 ];
-
-// Required methods on packets:
-// fn read<R: Read>(r: R) -> Result<Self>;
-// fn write<W: Write>(&self, w: W) -> Result<()>;
