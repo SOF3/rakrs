@@ -26,11 +26,13 @@ macro_rules! packets {
 
         $(pub use $mod::$name;)*
 
+        /// Supported packets sent and received before sessions are established.
         #[derive(Clone, Debug)]
         #[repr(u8)]
         pub enum OfflinePacket { $($name($mod::$name) = $id),* }
 
         impl CanIo for OfflinePacket {
+            /// Encodes an OfflinePacket into a full UDP packet.
             fn write<W: Write>(&self, mut w: W) -> Result<()> {
                 match self {
                     $(
@@ -42,6 +44,8 @@ macro_rules! packets {
                 }
             }
 
+            /// Reads a UDP packet of unknown type and attempts to interpret it as an
+            /// `OfflinePacket`.
             fn read<R: Read>(mut r: R) -> Result<OfflinePacket> {
                 let mut id = [0u8];
                 r.read_exact(&mut id)?;

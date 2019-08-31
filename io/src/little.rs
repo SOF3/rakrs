@@ -15,6 +15,7 @@
 
 use derive_more::*;
 
+/// A wrapper of the primitive types, encoded in little-endian instead of big-endian.
 #[derive(Clone, Copy, Debug, From, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Little<T: Copy>(pub T);
 

@@ -28,16 +28,34 @@ pub use ack::{Ack, Nack};
 pub use datagram::{inner, Datagram};
 
 bitflags! {
+    #[doc = "Bitmask flags used in the leading byte of a packet of an established session."]
     pub struct Flags: u8 {
+        /// Packets that do not contain this flag may be ignored.
+        ///
+        /// This flag should be present in all online packets.
         const VALID = 0x80;
+
+        /// Packet ID for `Ack`.
         const ACK = 0x40;
+
+        /// Packet ID for `Nack`.
         const NAK = 0x20;
+
+        /// Unused flag. Should be ignored.
+        #[allow(unused)]
         const PACKET_PAIR = 0x10;
+
+        /// Unused flag. Should be ignored.
+        #[allow(unused)]
         const CONTINUOUS_SEND = 0x08;
+
+        /// Unused flag. Should be ignored.
+        #[allow(unused)]
         const NEED_B_AND_AS= 0x04;
     }
 }
 
+/// Supported packets sent and received in an established session.
 #[derive(Clone, Debug)]
 pub enum OnlinePacket {
     Ack(Ack),
@@ -46,6 +64,7 @@ pub enum OnlinePacket {
 }
 
 impl OnlinePacket {
+    /// Encodes an OnlinePacket into a full UDP packet.
     pub fn write<W: Write>(&self, mut w: W) -> Result<()> {
         match self {
             OnlinePacket::Ack(ack) => {
@@ -66,6 +85,8 @@ impl OnlinePacket {
         }
     }
 
+    /// Reads a UDP packet of unknown type and attempts to interpret it as an
+    /// `OnlinePacket`.
     pub fn read<R: Read>(mut r: R) -> Result<Option<Self>> {
         let flags = Flags::from_bits_truncate(u8::read(&mut r)?);
         if !flags.contains(Flags::VALID) {

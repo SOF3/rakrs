@@ -158,27 +158,33 @@ impl CanIo for AckNack {
     }
 }
 
+/// Acknowledges that datagrams are received
 #[derive(Clone, Debug, Packet)]
 pub struct Ack(AckNack);
 
 impl Ack {
+    /// Creates an `Ack` packet.
     pub fn new(vec: Vec<PacketNum>) -> Self {
         Ack(AckNack(vec))
     }
 
+    /// Retrieves the sequence numbers of datagrams acknowledged in this packet
     pub fn packets(&self) -> &Vec<PacketNum> {
         &self.0 .0
     }
 }
 
+/// Acknowledges that datagrams are missed
 #[derive(Clone, Debug, Packet)]
 pub struct Nack(AckNack);
 
 impl Nack {
+    /// Creates a `Nack` packet.
     pub fn new(vec: Vec<PacketNum>) -> Self {
         Nack(AckNack(vec))
     }
 
+    /// Retrieves the sequence numbers of datagrams unacknowledged in this packet
     pub fn packets(&self) -> &Vec<PacketNum> {
         &self.0 .0
     }

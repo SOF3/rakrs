@@ -24,12 +24,14 @@ pub use triad::Triad;
 mod little;
 mod triad;
 
+/// Allows the type to be encoded/decoded using RakNet binary format.
 pub trait CanIo: Sized {
     fn write<W: Write>(&self, w: W) -> Result<()>;
 
     fn read<R: Read>(r: R) -> Result<Self>;
 }
 
+/// Binary representation of a bool.
 impl CanIo for bool {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
         w.write_u8(if *self { 1 } else { 0 })
@@ -47,6 +49,7 @@ impl CanIo for bool {
     }
 }
 
+/// Binary representation of an unsigned byte.
 impl CanIo for u8 {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
         w.write_u8(*self)
@@ -57,6 +60,7 @@ impl CanIo for u8 {
     }
 }
 
+/// Binary representation of a signed byte.
 impl CanIo for i8 {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
         w.write_i8(*self)
@@ -72,6 +76,9 @@ macro_rules! impl_primitive {
         impl_primitive!($ty, $ty, $write, $read);
     };
     ($ty:ty, $intermediate:ty, $write:ident, $read:ident) => {
+        /// Binary representation in big-endian.
+        ///
+        /// Wrap the type with `Little` to encode in little-endian.
         impl CanIo for $ty {
             fn write<W: Write>(&self, mut w: W) -> Result<()> {
                 let value = *self;
@@ -84,6 +91,7 @@ macro_rules! impl_primitive {
             }
         }
 
+        /// Binary representation in little-endian.
         impl CanIo for Little<$ty> {
             fn write<W: Write>(&self, mut w: W) -> Result<()> {
                 let value = *self;
@@ -109,6 +117,8 @@ impl_primitive!(f32, write_f32, read_f32);
 impl_primitive!(f64, write_f64, read_f64);
 impl_primitive!(Triad, write_u24, read_u24);
 
+/// Encodes a string using a u16 prefix indicating the length, followed by the characters encoded
+/// in UTF-8.
 impl CanIo for String {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
         CanIo::write(&(self.len() as u16), &mut w)?;
@@ -126,6 +136,8 @@ impl CanIo for String {
     }
 }
 
+/// Encodes an IP address + port using RakNet format. This is a mix of standard and non-standard
+/// IP encoding.
 impl CanIo for SocketAddr {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
         match self {
