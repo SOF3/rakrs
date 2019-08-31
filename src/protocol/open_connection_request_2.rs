@@ -20,7 +20,7 @@ use std::net::SocketAddr;
 
 use super::magic::Magic;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct OpenConnectionRequest2 {
     pub magic: Magic,
     pub server_address: SocketAddr,

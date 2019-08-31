@@ -18,7 +18,6 @@ use crate::prelude::*;
 
 use std::io::{Error, ErrorKind, Read, Result, Write};
 use std::net::{SocketAddr, SocketAddrV4, SocketAddrV6};
-use std::ops::{Deref, DerefMut};
 
 use byteorder::{BigEndian, LittleEndian, ReadBytesExt, WriteBytesExt};
 
@@ -28,22 +27,18 @@ pub trait CanIo: Sized {
     fn read<R: Read>(r: R) -> Result<Self>;
 }
 
-#[derive(From)]
+#[derive(Clone, Copy, Debug, From, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Little<T: Copy>(pub T);
 
-impl<T: Copy> Deref for Little<T> {
-    type Target = T;
-
-    fn deref(&self) -> &T {
-        &self.0
+impl<T: Copy> Little<T> {
+    #[inline]
+    pub fn inner(self) -> T {
+        self.0
     }
 }
 
-impl<T: Copy> DerefMut for Little<T> {
-    fn deref_mut(&mut self) -> &mut T {
-        &mut self.0
-    }
-}
+#[derive(Clone, Copy, Debug, From, Into, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Triad(u32); // TODO check overflow
 
 impl CanIo for bool {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
@@ -54,7 +49,10 @@ impl CanIo for bool {
         match r.read_u8()? {
             0 => Ok(false),
             1 => Ok(true),
-            _ => Err(Error::new(ErrorKind::Other, "Received invalid value for bool")),
+            _ => Err(Error::new(
+                ErrorKind::Other,
+                "Received invalid value for bool",
+            )),
         }
     }
 }
@@ -80,24 +78,32 @@ impl CanIo for i8 {
 }
 
 macro_rules! impl_primitive {
-    ($ty:ident, $write:ident, $read:ident) => {
+    ($ty:ty, $write:ident, $read:ident) => {
+        impl_primitive!($ty, $ty, $write, $read);
+    };
+    ($ty:ty, $intermediate:ty, $write:ident, $read:ident) => {
         impl CanIo for $ty {
             fn write<W: Write>(&self, mut w: W) -> Result<()> {
-                w.$write::<BigEndian>(*self)
+                let value = *self;
+                w.$write::<BigEndian>(value.into())
             }
 
             fn read<R: Read>(mut r: R) -> Result<Self> {
-                r.$read::<BigEndian>()
+                let value = r.$read::<BigEndian>()?;
+                Ok(value.into())
             }
         }
 
         impl CanIo for Little<$ty> {
             fn write<W: Write>(&self, mut w: W) -> Result<()> {
-                w.$write::<LittleEndian>(**self)
+                let value = *self;
+                w.$write::<LittleEndian>(value.inner().into())
             }
 
             fn read<R: Read>(mut r: R) -> Result<Self> {
-                Ok(r.$read::<LittleEndian>()?.into())
+                let raw = r.$read::<LittleEndian>()?;
+                let intermediate = <$intermediate>::from(raw);
+                Ok(Little::from(intermediate))
             }
         }
     };
@@ -111,6 +117,7 @@ impl_primitive!(i32, write_i32, read_i32);
 impl_primitive!(i64, write_i64, read_i64);
 impl_primitive!(f32, write_f32, read_f32);
 impl_primitive!(f64, write_f64, read_f64);
+impl_primitive!(Triad, write_u24, read_u24);
 
 impl CanIo for String {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
@@ -159,7 +166,7 @@ impl CanIo for SocketAddr {
                 r.read_exact(&mut bytes)?;
                 let port = u16::read(&mut r)?;
                 SocketAddr::V4(SocketAddrV4::new(bytes.into(), port))
-            },
+            }
             6 => {
                 Little::<u16>::read(&mut r)?; // AF_INET6
                 let port = u16::read(&mut r)?;
@@ -168,8 +175,11 @@ impl CanIo for SocketAddr {
                 r.read_exact(&mut bytes)?;
                 let scope_id = u32::read(&mut r)?;
                 SocketAddr::V6(SocketAddrV6::new(bytes.into(), port, flow_info, scope_id))
-            },
-            _ => Err(Error::new(ErrorKind::Other, "Received unsupported IP version"))?
+            }
+            _ => Err(Error::new(
+                ErrorKind::Other,
+                "Received unsupported IP version",
+            ))?,
         };
         Ok(ret)
     }

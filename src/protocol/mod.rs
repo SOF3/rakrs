@@ -18,13 +18,24 @@ use crate::prelude::*;
 
 use std::io::{Read, Result, Write};
 
-pub use can_io::{CanIo, Little};
+pub use can_io::{CanIo, Little, Triad};
+pub use magic::Magic;
 
-dirmod!();
+pub mod online {
+    pub use super::ack::{Ack, Nack};
+    pub use super::datagram::{Datagram, DatagramFlags, inner};
+}
+
+mod ack;
+mod can_io;
+mod datagram;
+mod magic;
 
 macro_rules! packets {
     ($($mod:ident $name:ident $id:literal;)*) => {
-        pub mod packets {
+        $(mod $mod;)*
+
+        pub mod offline {
             $(pub use super::$mod::$name;)*
         }
 
@@ -62,8 +73,6 @@ macro_rules! packets {
 // fn write<W: Write>(&self, w: W) -> Result<()>;
 
 packets! [
-    ack Ack 0xc0;
-    ack Nack 0xa0;
     advertise_system AdvertiseSystem 0x1d;
     connected_ping ConnectedPing 0x00;
     connected_pong ConnectedPong 0x03;

@@ -18,7 +18,7 @@ use crate::prelude::*;
 
 use super::magic::Magic;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct UnconnectedPong {
     pub send_ping_time: u64,
     pub server_id: u64,

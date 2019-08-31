@@ -21,6 +21,7 @@ use std::io::{Read, Result, Write};
 use super::CanIo;
 use super::magic::Magic;
 
+#[derive(Clone, Debug)]
 pub struct OpenConnectionRequest1 {
     pub magic: Magic,
     pub protocol: u8,

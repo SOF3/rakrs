@@ -18,7 +18,7 @@ use crate::prelude::*;
 
 use std::net::SocketAddr;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct ConnectionRequestAccepted {
     pub address: SocketAddr,
 }

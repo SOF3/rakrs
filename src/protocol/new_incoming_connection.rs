@@ -21,6 +21,7 @@ use std::net::SocketAddr;
 
 use super::CanIo;
 
+#[derive(Clone, Debug)]
 pub struct NewIncomingConnection {
     pub address: SocketAddr,
     pub system_addresses: Vec<SocketAddr>,

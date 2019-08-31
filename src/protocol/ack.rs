@@ -143,6 +143,7 @@ fn decode<R: Read>(mut r: R) -> Result<Vec<PacketNum>> {
     Ok(vec)
 }
 
+#[derive(Clone, Debug)]
 struct AckNack(Vec<PacketNum>);
 
 impl AckNack {
@@ -155,6 +156,7 @@ impl AckNack {
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct Ack(AckNack);
 
 impl Ack {
@@ -175,6 +177,7 @@ impl Ack {
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct Nack(AckNack);
 
 impl Nack {

@@ -16,7 +16,7 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct ConnectionRequest {
     pub client_id: u64,
     pub send_ping_time: u64,

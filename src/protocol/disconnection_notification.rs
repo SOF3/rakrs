@@ -16,6 +16,6 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct DisconnectionNotification {
 }

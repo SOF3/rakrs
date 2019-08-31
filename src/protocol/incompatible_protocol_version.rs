@@ -18,7 +18,7 @@ use crate::prelude::*;
 
 use super::magic::Magic;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct IncompatibleProtocolVersion {
     pub protocol_version: u8,
     pub magic: Magic,

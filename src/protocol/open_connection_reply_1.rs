@@ -18,7 +18,7 @@ use crate::prelude::*;
 
 use super::magic::Magic;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct OpenConnectionReply1 {
     pub magic: Magic,
     pub server_id: u64,

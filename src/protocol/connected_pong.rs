@@ -16,7 +16,7 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-#[derive(Packet)]
+#[derive(Clone, Debug, Packet)]
 pub struct ConnectedPong {
     pub send_ping_time: u64,
     pub send_pong_time: u64,
