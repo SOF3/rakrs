@@ -18,21 +18,17 @@ use crate::prelude::*;
 
 use std::io::{Cursor, Read, Result, Write};
 
-use bitflags::bitflags;
-
 use super::{CanIo, Little, Triad};
 use inner::InnerPacket;
 
 #[derive(Clone, Debug)]
 pub struct Datagram {
-    pub flags: DatagramFlags,
     pub packets: Vec<InnerPacket>,
     pub seq_number: Triad,
 }
 
 impl CanIo for Datagram {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
-        self.flags.bits().write(&mut w)?;
         Little(self.seq_number).write(&mut w)?;
         for packet in &self.packets {
             packet.write(&mut w)?;
@@ -41,7 +37,6 @@ impl CanIo for Datagram {
     }
 
     fn read<R: Read>(mut r: R) -> Result<Self> {
-        let flags = DatagramFlags::from_bits_truncate(CanIo::read(&mut r)?);
         let seq_number = Little::<Triad>::read(&mut r)?.inner();
 
         let mut buf = vec![];
@@ -55,21 +50,9 @@ impl CanIo for Datagram {
         }
 
         Ok(Self {
-            flags,
             packets,
             seq_number,
         })
-    }
-}
-
-bitflags! {
-    pub struct DatagramFlags: u8 {
-        const VALID = 0x80;
-        const ACK = 0x40;
-        const NAK = 0x20;
-        const PACKET_PAIR = 0x10;
-        const CONTINUOUS_SEND = 0x08;
-        const NEED_B_AND_AS= 0x04;
     }
 }
 

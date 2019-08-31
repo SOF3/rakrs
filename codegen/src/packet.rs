@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::{Literal, Span, TokenStream};
 use quote::quote;
 use syn::spanned::Spanned;
 use syn::{Attribute, Data, DeriveInput, Error, Fields, Ident, Result, Type};
@@ -26,7 +26,10 @@ pub fn imp(item: DeriveInput) -> Result<TokenStream> {
             let writer = write_fields(
                 &data.fields,
                 |ident| quote!(self.#ident),
-                |i, _| quote!(self.#i),
+                |i, _| {
+                    let i = Literal::usize_unsuffixed(i);
+                    quote!(self.#i)
+                },
             )?;
             let reads = read_fields(&data.fields)?;
 

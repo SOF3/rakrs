@@ -21,6 +21,8 @@ use std::iter::Iterator;
 
 use byteorder::{BigEndian, LittleEndian, ReadBytesExt, WriteBytesExt};
 
+use super::CanIo;
+
 const RECORD_TYPE_RANGE: u8 = 0;
 const RECORD_TYPE_SINGLE: u8 = 1;
 
@@ -146,7 +148,7 @@ fn decode<R: Read>(mut r: R) -> Result<Vec<PacketNum>> {
 #[derive(Clone, Debug)]
 struct AckNack(Vec<PacketNum>);
 
-impl AckNack {
+impl CanIo for AckNack {
     fn write<W: Write>(&self, w: W) -> Result<()> {
         encode(self.0.iter().map(|&i| i), w)
     }
@@ -156,18 +158,10 @@ impl AckNack {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Packet)]
 pub struct Ack(AckNack);
 
 impl Ack {
-    pub fn write<W: Write>(&self, w: W) -> Result<()> {
-        self.0.write(w)
-    }
-
-    pub fn read<R: Read>(r: R) -> Result<Self> {
-        Ok(Self(AckNack::read(r)?))
-    }
-
     pub fn new(vec: Vec<PacketNum>) -> Self {
         Ack(AckNack(vec))
     }
@@ -177,18 +171,10 @@ impl Ack {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Packet)]
 pub struct Nack(AckNack);
 
 impl Nack {
-    pub fn write<W: Write>(&self, w: W) -> Result<()> {
-        self.0.write(w)
-    }
-
-    pub fn read<R: Read>(r: R) -> Result<Self> {
-        Ok(Self(AckNack::read(r)?))
-    }
-
     pub fn new(vec: Vec<PacketNum>) -> Self {
         Nack(AckNack(vec))
     }

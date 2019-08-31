@@ -30,13 +30,3 @@ pub fn derive_packet(item: TokenStream) -> TokenStream {
         Err(err) => err.to_compile_error().into(),
     }
 }
-
-mod dir;
-
-#[proc_macro]
-pub fn dirmod(_: TokenStream) -> TokenStream {
-    match dir::imp() {
-        Ok(item) => item.into(),
-        Err(err) => err.to_compile_error().into(),
-    }
-}
