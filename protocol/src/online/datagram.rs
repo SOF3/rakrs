@@ -18,8 +18,8 @@ use crate::prelude::*;
 
 use std::io::{Cursor, Read, Result, Write};
 
-use super::{CanIo, Little, Triad};
 use inner::InnerPacket;
+use rakrs_io::{CanIo, Little, Triad};
 
 #[derive(Clone, Debug)]
 pub struct Datagram {

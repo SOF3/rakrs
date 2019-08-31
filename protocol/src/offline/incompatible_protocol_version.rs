@@ -13,11 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(dead_code)]
-
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-pub use rakrs_protocol as protocol;
+use crate::Magic;
 
-mod prelude;
+#[derive(Clone, Debug, Packet)]
+pub struct IncompatibleProtocolVersion {
+    pub protocol_version: u8,
+    pub magic: Magic,
+    pub server_id: u64,
+}

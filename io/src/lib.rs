@@ -13,32 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use std::io::{Error, ErrorKind, Read, Result, Write};
 use std::net::{SocketAddr, SocketAddrV4, SocketAddrV6};
 
 use byteorder::{BigEndian, LittleEndian, ReadBytesExt, WriteBytesExt};
+
+pub use little::Little;
+pub use triad::Triad;
+
+mod little;
+mod triad;
 
 pub trait CanIo: Sized {
     fn write<W: Write>(&self, w: W) -> Result<()>;
 
     fn read<R: Read>(r: R) -> Result<Self>;
 }
-
-#[derive(Clone, Copy, Debug, From, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Little<T: Copy>(pub T);
-
-impl<T: Copy> Little<T> {
-    #[inline]
-    pub fn inner(self) -> T {
-        self.0
-    }
-}
-
-#[derive(Clone, Copy, Debug, From, Into, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Triad(u32); // TODO check overflow
 
 impl CanIo for bool {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {

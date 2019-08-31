@@ -18,7 +18,7 @@ use crate::prelude::*;
 
 use std::net::SocketAddr;
 
-use super::Magic;
+use crate::Magic;
 
 #[derive(Clone, Debug, Packet)]
 pub struct OpenConnectionReply2 {

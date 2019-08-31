@@ -18,6 +18,8 @@ use crate::prelude::*;
 
 use std::io::{Error, ErrorKind, Read, Result, Write};
 
+use rakrs_io::CanIo;
+
 #[derive(Clone, Debug)]
 pub struct Magic;
 
@@ -25,7 +27,7 @@ const MAGIC_PAYLOAD: [u8; 16] = [
     0x00, 0xff, 0xff, 0x00, 0xfe, 0xfe, 0xfe, 0xfe, 0xfd, 0xfd, 0xfd, 0xfd, 0x12, 0x34, 0x56, 0x78,
 ];
 
-impl super::can_io::CanIo for Magic {
+impl CanIo for Magic {
     fn write<W: Write>(&self, mut w: W) -> Result<()> {
         w.write_all(&MAGIC_PAYLOAD)
     }

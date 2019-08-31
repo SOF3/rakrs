@@ -19,7 +19,7 @@ use crate::prelude::*;
 use std::io::{Cursor, Error, ErrorKind, Read, Result, Write};
 use std::net::SocketAddr;
 
-use super::CanIo;
+use rakrs_io::CanIo;
 
 #[derive(Clone, Debug)]
 pub struct NewIncomingConnection {

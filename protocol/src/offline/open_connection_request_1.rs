@@ -18,8 +18,8 @@ use crate::prelude::*;
 
 use std::io::{Read, Result, Write};
 
-use super::CanIo;
-use super::magic::Magic;
+use rakrs_io::CanIo;
+use crate::Magic;
 
 #[derive(Clone, Debug)]
 pub struct OpenConnectionRequest1 {

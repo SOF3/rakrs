@@ -13,11 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(dead_code)]
-
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-pub use rakrs_protocol as protocol;
+use crate::Magic;
 
-mod prelude;
+#[derive(Clone, Debug, Packet)]
+pub struct OpenConnectionReply1 {
+    pub magic: Magic,
+    pub server_id: u64,
+    pub server_security: bool,
+    pub mtu_size: u16,
+}

@@ -13,11 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(dead_code)]
+use derive_more::*;
 
-#[allow(unused_imports)]
-use crate::prelude::*;
+#[derive(Clone, Copy, Debug, From, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Little<T: Copy>(pub T);
 
-pub use rakrs_protocol as protocol;
-
-mod prelude;
+impl<T: Copy> Little<T> {
+    #[inline]
+    pub fn inner(self) -> T {
+        self.0
+    }
+}

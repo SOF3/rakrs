@@ -16,12 +16,14 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-use super::magic::Magic;
+use std::net::SocketAddr;
+
+use crate::Magic;
 
 #[derive(Clone, Debug, Packet)]
-pub struct OpenConnectionReply1 {
+pub struct OpenConnectionRequest2 {
     pub magic: Magic,
-    pub server_id: u64,
-    pub server_security: bool,
+    pub server_address: SocketAddr,
     pub mtu_size: u16,
+    pub client_id: u64,
 }

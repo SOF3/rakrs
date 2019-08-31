@@ -13,17 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[allow(unused_imports)]
-use crate::prelude::*;
+use derive_more::*;
 
-use std::net::SocketAddr;
-
-use super::magic::Magic;
-
-#[derive(Clone, Debug, Packet)]
-pub struct OpenConnectionRequest2 {
-    pub magic: Magic,
-    pub server_address: SocketAddr,
-    pub mtu_size: u16,
-    pub client_id: u64,
-}
+#[derive(Clone, Copy, Debug, From, Into, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Triad(u32); // TODO check overflow

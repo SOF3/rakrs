@@ -18,84 +18,13 @@ use crate::prelude::*;
 
 use std::io::{Error, ErrorKind, Read, Result, Write};
 
-pub use can_io::{CanIo, Little, Triad};
-pub use magic::Magic;
-
-mod ack;
-mod can_io;
-mod datagram;
-mod magic;
-
-pub mod online {
-    use bitflags::bitflags;
-
-    pub use super::ack::{Ack, Nack};
-    pub use super::datagram::{inner, Datagram};
-
-    bitflags! {
-        pub struct Flags: u8 {
-            const VALID = 0x80;
-            const ACK = 0x40;
-            const NAK = 0x20;
-            const PACKET_PAIR = 0x10;
-            const CONTINUOUS_SEND = 0x08;
-            const NEED_B_AND_AS= 0x04;
-        }
-    }
-}
-
-#[derive(Clone, Debug)]
-pub enum OnlinePacket {
-    Ack(online::Ack),
-    Nack(online::Nack),
-    Datagram(online::Datagram),
-}
-
-impl OnlinePacket {
-    pub fn write<W: Write>(&self, mut w: W) -> Result<()> {
-        match self {
-            OnlinePacket::Ack(ack) => {
-                let flags = online::Flags::VALID | online::Flags::ACK;
-                flags.bits().write(&mut w)?;
-                ack.write(&mut w)
-            }
-            OnlinePacket::Nack(nack) => {
-                let flags = online::Flags::VALID | online::Flags::NAK;
-                flags.bits().write(&mut w)?;
-                nack.write(&mut w)
-            }
-            OnlinePacket::Datagram(datagram) => {
-                let flags = online::Flags::VALID;
-                flags.bits().write(&mut w)?;
-                datagram.write(&mut w)
-            }
-        }
-    }
-
-    pub fn read<R: Read>(mut r: R) -> Result<Option<Self>> {
-        let flags = online::Flags::from_bits_truncate(u8::read(&mut r)?);
-        if !flags.contains(online::Flags::VALID) {
-            return Ok(None);
-        }
-
-        let ret = if flags.contains(online::Flags::ACK) {
-            OnlinePacket::Ack(CanIo::read(&mut r)?)
-        } else if flags.contains(online::Flags::NAK) {
-            OnlinePacket::Nack(CanIo::read(&mut r)?)
-        } else {
-            OnlinePacket::Datagram(CanIo::read(&mut r)?)
-        };
-        Ok(Some(ret))
-    }
-}
+use rakrs_io::CanIo;
 
 macro_rules! packets {
     ($($mod:ident $name:ident $id:literal;)*) => {
         $(mod $mod;)*
 
-        pub mod offline {
-            $(pub use super::$mod::$name;)*
-        }
+        $(pub use $mod::$name;)*
 
         #[derive(Clone, Debug)]
         #[repr(u8)]

@@ -13,11 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(dead_code)]
+#![feature(arbitrary_enum_discriminant, proc_macro_hygiene)]
 
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-pub use rakrs_protocol as protocol;
-
 mod prelude;
+
+pub use magic::Magic;
+pub use offline::OfflinePacket;
+pub use online::OnlinePacket;
+
+mod magic;
+pub mod offline;
+pub mod online;

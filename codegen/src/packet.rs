@@ -118,7 +118,7 @@ pub fn imp(item: DeriveInput) -> Result<TokenStream> {
 
     Ok(quote! {
         #[automatically_derived]
-        impl crate::protocol::CanIo for #item_name {
+        impl ::rakrs_io::CanIo for #item_name {
             fn write<W: ::std::io::Write>(&self, mut w: W) -> ::std::io::Result<()> {
                 #writer
                 Ok(())
@@ -229,14 +229,14 @@ fn pat_fields(fields: &Fields) -> TokenStream {
 
 fn write_field(_ty: &Type, expr: &TokenStream) -> Result<TokenStream> {
     Ok(quote! {
-        crate::protocol::CanIo::write(&(#expr), &mut w)?;
+        ::rakrs_io::CanIo::write(&(#expr), &mut w)?;
     })
 }
 
 fn read_field(ty: &Type) -> Result<TokenStream> {
     Ok(quote! {
         {
-            let var: #ty = crate::protocol::CanIo::read(&mut r)?;
+            let var: #ty = ::rakrs_io::CanIo::read(&mut r)?;
             var
         }
     })

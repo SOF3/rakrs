@@ -16,7 +16,7 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-use super::magic::Magic;
+use crate::Magic;
 
 #[derive(Clone, Debug, Packet)]
 pub struct UnconnectedPing {

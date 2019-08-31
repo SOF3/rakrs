@@ -16,11 +16,12 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-use super::magic::Magic;
+use crate::Magic;
 
 #[derive(Clone, Debug, Packet)]
-pub struct IncompatibleProtocolVersion {
-    pub protocol_version: u8,
-    pub magic: Magic,
+pub struct UnconnectedPong {
+    pub send_ping_time: u64,
     pub server_id: u64,
+    pub magic: Magic,
+    pub server_name: String,
 }
