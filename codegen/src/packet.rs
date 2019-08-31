@@ -95,18 +95,20 @@ pub fn imp(item: DeriveInput) -> Result<TokenStream> {
                 read_vars.push(quote!(#discrim => #item_name::#var_name #fields_read));
             }
 
-            let writer = quote! {
+            let writer = quote! {{
+                use ::byteorder::WriteBytesExt;
                 match self {
                     #(#write_vars),*
                 }
-            };
-            let reader = quote! {
+            }};
+            let reader = quote! {{
+                use ::byteorder::ReadBytesExt;
                 let id = r.#repr_read()?;
                 match id {
                     #(#read_vars,)*
-                    _ => Err(::std::io::Error::new(::std::io::ErrorKind::Other, format!("Unexpected enum variant {:?}", r)))?,
+                    _ => Err(::std::io::Error::new(::std::io::ErrorKind::Other, format!("Unexpected enum variant {:?}", id)))?,
                 }
-            };
+            }};
 
             (writer, reader)
         }
@@ -116,7 +118,7 @@ pub fn imp(item: DeriveInput) -> Result<TokenStream> {
         ))?,
     };
 
-    Ok(quote! {
+    let ret = quote! {
         #[automatically_derived]
         impl ::rakrs_io::CanIo for #item_name {
             fn write<W: ::std::io::Write>(&self, mut w: W) -> ::std::io::Result<()> {
@@ -128,7 +130,8 @@ pub fn imp(item: DeriveInput) -> Result<TokenStream> {
                 Ok(#reader)
             }
         }
-    })
+    };
+    Ok(ret)
 }
 
 fn find_attr<'a, I, S>(attr: I, name: S) -> Option<&'a Attribute>
@@ -228,9 +231,10 @@ fn pat_fields(fields: &Fields) -> TokenStream {
 }
 
 fn write_field(_ty: &Type, expr: &TokenStream) -> Result<TokenStream> {
-    Ok(quote! {
-        ::rakrs_io::CanIo::write(&(#expr), &mut w)?;
-    })
+    Ok(quote! {{
+        use ::rakrs_io::CanIo;
+        (#expr).write(&mut w)?;
+    }})
 }
 
 fn read_field(ty: &Type) -> Result<TokenStream> {

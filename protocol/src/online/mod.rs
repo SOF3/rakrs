@@ -25,7 +25,7 @@ mod ack;
 mod datagram;
 
 pub use ack::{Ack, Nack};
-pub use datagram::{inner, Datagram};
+pub use datagram::Datagram;
 
 bitflags! {
     #[doc = "Bitmask flags used in the leading byte of a packet of an established session."]

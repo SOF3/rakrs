@@ -16,10 +16,6 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-use std::io::{Error, ErrorKind, Read, Result, Write};
-
-use rakrs_io::CanIo;
-
 macro_rules! packets {
     ($($mod:ident $name:ident $id:literal;)*) => {
         $(mod $mod;)*
@@ -27,36 +23,9 @@ macro_rules! packets {
         $(pub use $mod::$name;)*
 
         /// Supported packets sent and received before sessions are established.
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, Packet)]
         #[repr(u8)]
         pub enum OfflinePacket { $($name($mod::$name) = $id),* }
-
-        impl CanIo for OfflinePacket {
-            /// Encodes an OfflinePacket into a full UDP packet.
-            fn write<W: Write>(&self, mut w: W) -> Result<()> {
-                match self {
-                    $(
-                        OfflinePacket::$name(var) => {
-                            w.write_all(&[$id])?;
-                            var.write(w)
-                        },
-                    )*
-                }
-            }
-
-            /// Reads a UDP packet of unknown type and attempts to interpret it as an
-            /// `OfflinePacket`.
-            fn read<R: Read>(mut r: R) -> Result<OfflinePacket> {
-                let mut id = [0u8];
-                r.read_exact(&mut id)?;
-                match id[0] {
-                    $(
-                        $id => Ok(OfflinePacket::$name($mod::$name::read(r)?)),
-                    )*
-                    _ => Err(Error::new(ErrorKind::Other, "Received unknown offline packet")),
-                }
-            }
-        }
     };
 }
 
@@ -65,14 +34,7 @@ macro_rules! packets {
 // fn write<W: Write>(&self, w: W) -> Result<()>;
 
 packets! [
-    advertise_system AdvertiseSystem 0x1d;
-    connected_ping ConnectedPing 0x00;
-    connected_pong ConnectedPong 0x03;
-    connection_request ConnectionRequest 0x09;
-    connection_request_accepted ConnectionRequestAccepted 0x10;
-    disconnection_notification DisconnectionNotification 0x15;
     incompatible_protocol_version IncompatibleProtocolVersion 0x19;
-    new_incoming_connection NewIncomingConnection 0x13;
     open_connection_request_1 OpenConnectionRequest1 0x05;
     open_connection_reply_1 OpenConnectionReply1 0x06;
     open_connection_request_2 OpenConnectionRequest2 0x07;
