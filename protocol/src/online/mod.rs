@@ -23,6 +23,7 @@ use rakrs_io::CanIo;
 
 mod ack;
 mod datagram;
+pub mod inner;
 
 pub use ack::{Ack, Nack};
 pub use datagram::Datagram;

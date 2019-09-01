@@ -16,3 +16,4 @@ derive_more = "0.15.0"
 getset = "0.0.7"
 rakrs-io = {path = "io", version = "0.1.0"}
 rakrs-protocol = {path = "protocol", version = "0.1.0"}
+tokio = "0.2.0-alpha.4"

@@ -13,13 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(dead_code)]
-
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-pub use rakrs_io as io;
-pub use rakrs_protocol as protocol;
+use std::net::SocketAddr;
 
-mod prelude;
-pub mod session;
+use send_queue::SendQueue;
+
+mod send_queue;
+
+pub struct Session {
+    address: SocketAddr,
+    send_queue: SendQueue,
+    state: SessionState,
+}
+
+pub enum SessionState {}
