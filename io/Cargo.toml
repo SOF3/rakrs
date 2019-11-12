@@ -9,4 +9,4 @@ homepage = "https://github.com/SOF3/rakrs"
 
 [dependencies]
 byteorder = "1.3"
-derive_more = "0.15.0"
+derive_more = "0.99.0"
