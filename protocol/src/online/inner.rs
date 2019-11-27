@@ -20,7 +20,6 @@ use crate::prelude::*;
 use crate::prelude::*;
 
 use std::io::{Error, ErrorKind, Read, Result, Write};
-use std::mem::size_of;
 
 use rakrs_io::{CanIo, Little, Triad};
 
