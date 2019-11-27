@@ -39,7 +39,7 @@ bitflags! {
 }
 
 /// Supported packets sent and received in an established session.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum OnlinePacket {
     Ack(Ack),
     Nack(Nack),

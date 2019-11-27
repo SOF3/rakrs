@@ -9,7 +9,7 @@ macro_rules! packets {
 
         /// An `EncapPacket` is a high-level packet wrapped by an `online::InnerPacket` streamed in an
         /// `online::Datagram`.
-        #[derive(rakrs_codegen::Packet)]
+        #[derive(rakrs_codegen::Packet, PartialEq)]
         #[repr(u8)]
         pub enum EncapPacket {
             $($name($mod::$name) = $id),*

@@ -3,7 +3,7 @@ use std::net::SocketAddr;
 
 use rakrs_io::CanIo;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct NewIncomingConnection {
     pub address: SocketAddr,
     pub system_addresses: Vec<SocketAddr>,

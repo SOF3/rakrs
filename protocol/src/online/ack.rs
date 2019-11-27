@@ -127,7 +127,7 @@ fn decode<R: Read>(mut r: R) -> Result<Vec<PacketNum>> {
     Ok(vec)
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 struct AckNack(Vec<PacketNum>);
 
 impl CanIo for AckNack {
@@ -141,7 +141,7 @@ impl CanIo for AckNack {
 }
 
 /// Acknowledges that datagrams are received
-#[derive(Clone, Debug, rakrs_codegen::Packet)]
+#[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
 pub struct Ack(AckNack);
 
 impl Ack {
@@ -157,7 +157,7 @@ impl Ack {
 }
 
 /// Acknowledges that datagrams are missed
-#[derive(Clone, Debug, rakrs_codegen::Packet)]
+#[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
 pub struct Nack(AckNack);
 
 impl Nack {

@@ -4,7 +4,7 @@ use rakrs_io::CanIo;
 
 /// Handles the 16-byte magic sequence in RakNet protocol.
 /// This is a marker type and does not take any memory.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Magic;
 
 const MAGIC_PAYLOAD: [u8; 16] = [
@@ -27,4 +27,14 @@ impl CanIo for Magic {
             Err(Error::new(ErrorKind::Other, "Magic payload mismatch"))
         }
     }
+}
+
+#[cfg(test)]
+rakrs_testkit::check_canio! {
+    write:
+        0x00 0xff 0xff 0x00
+        0xfe 0xfe 0xfe 0xfe
+        0xfd 0xfd 0xfd 0xfd
+        0x12 0x34 0x56 0x78
+    = read: Magic
 }

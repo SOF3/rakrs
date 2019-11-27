@@ -5,7 +5,7 @@ macro_rules! packets {
         $(pub use $mod::$name;)*
 
         /// Supported packets sent and received before sessions are established.
-        #[derive(Clone, Debug, rakrs_codegen::Packet)]
+        #[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
         #[repr(u8)]
         pub enum OfflinePacket { $($name($mod::$name) = $id),* }
     };

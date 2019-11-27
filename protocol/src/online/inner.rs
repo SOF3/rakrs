@@ -8,7 +8,7 @@ const RELIABILITY_SHIFT: u8 = 5;
 const RELIABILITY_MASK: u8 = (1u8 << (BYTE_SIZE - RELIABILITY_SHIFT)) - 1;
 const SPLIT_BIT: u8 = 16;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct InnerPacket {
     pub reliability: InnerPacketReliability,
     pub split: Option<Split>,
@@ -137,7 +137,7 @@ impl CanIo for InnerPacket {
 }
 
 #[repr(u8)]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum InnerPacketReliability {
     Unreliable,
     UnreliableSequenced(Sequenced),
@@ -220,24 +220,24 @@ impl InnerPacketReliability {
     }
 }
 
-#[derive(Clone, Debug, rakrs_codegen::Packet)]
+#[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
 pub struct Reliable {
     pub message_index: Little<Triad>,
 }
 
-#[derive(Clone, Debug, rakrs_codegen::Packet)]
+#[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
 pub struct Sequenced {
     pub sequence_index: Little<Triad>,
     pub ordered: Ordered,
 }
 
-#[derive(Clone, Debug, rakrs_codegen::Packet)]
+#[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
 pub struct Ordered {
     pub order_index: Little<Triad>,
     pub order_channel: u8,
 }
 
-#[derive(Clone, Debug, rakrs_codegen::Packet)]
+#[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
 pub struct Split {
     pub split_count: u32,
     pub split_id: u16,

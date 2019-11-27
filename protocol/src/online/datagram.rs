@@ -3,7 +3,7 @@ use std::io::{Cursor, Read, Result, Write};
 use super::inner::InnerPacket;
 use rakrs_io::{CanIo, Little, Triad};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Datagram {
     pub packets: Vec<InnerPacket>,
     pub seq_number: Triad,

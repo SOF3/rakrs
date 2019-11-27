@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "codegen", "io", "protocol"]
+members = [".", "codegen", "io", "protocol", "testkit"]
 
 [package]
 name = "rakrs"

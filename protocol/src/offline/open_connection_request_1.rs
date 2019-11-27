@@ -3,7 +3,7 @@ use std::io::{Read, Result, Write};
 use rakrs_io::CanIo;
 use crate::Magic;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct OpenConnectionRequest1 {
     pub magic: Magic,
     pub protocol: u8,
