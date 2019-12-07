@@ -30,7 +30,10 @@ impl CanIo for NewIncomingConnection {
         drop(r);
 
         if buf.len() < 16 {
-            return Err(Error::new(ErrorKind::UnexpectedEof, "Expected send_ping_time and send_pong_time"));
+            return Err(Error::new(
+                ErrorKind::UnexpectedEof,
+                "Expected send_ping_time and send_pong_time",
+            ));
         }
 
         let sa_len = buf.len() - 16;
@@ -47,6 +50,11 @@ impl CanIo for NewIncomingConnection {
             system_addresses.push(addr);
         }
 
-        Ok(Self { address, system_addresses, send_ping_time, send_pong_time })
+        Ok(Self {
+            address,
+            system_addresses,
+            send_ping_time,
+            send_pong_time,
+        })
     }
 }

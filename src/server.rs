@@ -4,9 +4,9 @@ use std::net::SocketAddr;
 
 use rakrs_io::CanIo;
 use rakrs_protocol::{offline, online};
-use tokio::net::{self, UdpSocket};
+use tokio::net;
 
-pub async fn run_server<A, FPollR, FCkR, FOnR, FOffR>(
+pub async fn run<A, FPollR, FCkR, FOnR, FOffR>(
     bind: A,
     poll_send: impl Fn() -> FPollR,
     query_online: impl Fn(&'_ SocketAddr) -> FCkR,
@@ -20,7 +20,7 @@ where
     FOnR: Future<Output = ()>,
     FOffR: Future<Output = ()>,
 {
-    let mut socket = UdpSocket::bind(&bind).await?;
+    let mut socket = net::UdpSocket::bind(&bind).await?;
 
     loop {
         while let Some((addr, buf)) = poll_send().await {

@@ -1,8 +1,8 @@
-use crate::io::{Little, Triad};
-use crate::protocol::online::inner::{
+use rakrs_io::{Little, Triad};
+use rakrs_protocol::online::inner::{
     InnerPacket, InnerPacketReliability as Reliability, Ordered, Reliable, Sequenced, Split,
 };
-use crate::protocol::online::Datagram;
+use rakrs_protocol::online::Datagram;
 
 const CHANNEL_COUNT: usize = 32;
 

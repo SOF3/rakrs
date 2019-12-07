@@ -1,7 +1,7 @@
 use std::io::{Read, Result, Write};
 
-use rakrs_io::CanIo;
 use crate::Magic;
+use rakrs_io::CanIo;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct OpenConnectionRequest1 {
@@ -24,6 +24,10 @@ impl CanIo for OpenConnectionRequest1 {
         let protocol = <u8 as CanIo>::read(&mut r)?;
         let mtu_size = r.bytes().count();
 
-        Ok(Self { magic, protocol, mtu_size })
+        Ok(Self {
+            magic,
+            protocol,
+            mtu_size,
+        })
     }
 }

@@ -1,7 +1,16 @@
 #![allow(dead_code)]
 
-pub use rakrs_io as io;
-pub use rakrs_protocol as protocol;
+use std::io;
+
+use tokio::net::{self, ToSocketAddrs};
+use tokio::runtime;
 
 pub mod server;
 pub mod session;
+
+pub fn run<A>(bind: A) -> io::Result<()>
+where
+    A: net::ToSocketAddrs,
+{
+    unimplemented!()
+}

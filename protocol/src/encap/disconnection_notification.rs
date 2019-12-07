@@ -1,3 +1,2 @@
 #[derive(Clone, Debug, rakrs_codegen::Packet, PartialEq)]
-pub struct DisconnectionNotification {
-}
+pub struct DisconnectionNotification {}
